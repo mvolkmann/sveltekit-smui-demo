@@ -76,10 +76,6 @@
 <!-- <div class="drawer-container"> -->
 <AutoAdjust {topAppBar}>
   <Drawer variant="modal" fixed={false} bind:open={drawerOpen}>
-    <Header>
-      <Title>Super Mail</Title>
-      <Subtitle>It's the best fake mail app drawer.</Subtitle>
-    </Header>
     <Content>
       <List>
         <Item
