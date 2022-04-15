@@ -7,6 +7,14 @@
   import TopAppBar, {AutoAdjust, Row, Section, Title} from '@smui/top-app-bar';
   import type {TopAppBarComponentDev} from '@smui/top-app-bar';
   import IconButton from '@smui/icon-button';
+  import {page} from '$app/stores';
+
+  const pages = [
+    {title: 'Inbox', icon: 'inbox'},
+    {title: 'Star', icon: 'star'},
+    {title: 'Sent Mail', icon: 'send'},
+    {title: 'Drafts', icon: 'drafts'}
+  ];
 
   let activePage = 'Inbox';
   let darkTheme: boolean;
@@ -73,70 +81,21 @@
   </Row>
 </TopAppBar>
 
-<!-- <div class="drawer-container"> -->
 <AutoAdjust {topAppBar}>
   <Drawer variant="modal" fixed={false} bind:open={drawerOpen}>
     <Content>
       <List>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Inbox')}
-          activated={activePage === 'Inbox'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">inbox</Graphic>
-          <Text>Inbox</Text>
-        </Item>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Star')}
-          activated={activePage === 'Star'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">star</Graphic>
-          <Text>Star</Text>
-        </Item>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Sent Mail')}
-          activated={activePage === 'Sent Mail'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">send</Graphic>
-          <Text>Sent Mail</Text>
-        </Item>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Drafts')}
-          activated={activePage === 'Drafts'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">drafts</Graphic>
-          <Text>Drafts</Text>
-        </Item>
-
-        <Separator />
-        <Subheader component={H6}>Labels</Subheader>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Family')}
-          activated={activePage === 'Family'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">bookmark</Graphic>
-          <Text>Family</Text>
-        </Item>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Friends')}
-          activated={activePage === 'Friends'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">bookmark</Graphic>
-          <Text>Friends</Text>
-        </Item>
-        <Item
-          href="javascript:void(0)"
-          on:click={() => setActive('Work')}
-          activated={activePage === 'Work'}
-        >
-          <Graphic class="material-icons" aria-hidden="true">bookmark</Graphic>
-          <Text>Work</Text>
-        </Item>
+        {#each pages as page}
+          <Item
+            on:click={() => setActive(page.title)}
+            activated={activePage === page.title}
+          >
+            <Graphic class="material-icons" aria-hidden="true">
+              {page.icon}
+            </Graphic>
+            <Text>{page.title}</Text>
+          </Item>
+        {/each}
       </List>
     </Content>
   </Drawer>
