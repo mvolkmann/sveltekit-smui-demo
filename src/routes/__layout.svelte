@@ -73,7 +73,8 @@
   </Row>
 </TopAppBar>
 
-<div class="drawer-container">
+<!-- <div class="drawer-container"> -->
+<AutoAdjust {topAppBar}>
   <Drawer variant="modal" fixed={false} bind:open={drawerOpen}>
     <Header>
       <Title>Super Mail</Title>
@@ -144,37 +145,5 @@
     </Content>
   </Drawer>
 
-  <div class="main-content">
-    <AutoAdjust {topAppBar}>
-      <slot />
-    </AutoAdjust>
-  </div>
-</div>
-
-<style>
-  .drawer-container {
-    position: relative;
-    display: flex;
-    /* height: 350px; */
-    height: 100%;
-    max-width: 600px;
-    border: 1px solid
-      var(--mdc-theme-text-hint-on-background, rgba(0, 0, 0, 0.1));
-    overflow: hidden;
-    z-index: 0;
-  }
-
-  .main-content {
-    overflow: auto;
-    padding: 16px;
-    height: 100%;
-    box-sizing: border-box;
-  }
-
-  * :global(.app-content) {
-    flex: auto;
-    overflow: auto;
-    position: relative;
-    flex-grow: 1;
-  }
-</style>
+  <slot />
+</AutoAdjust>
