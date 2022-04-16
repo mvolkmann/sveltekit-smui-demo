@@ -1,5 +1,11 @@
 <script lang="ts">
+  import Autocomplete from '@smui-extra/autocomplete';
   import Button, {Label} from '@smui/button';
+  import DatePicker from '../DatePicker.svelte';
+
+  const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
+  let selectedAnimal = '';
+  let selectedDate = new Date();
 </script>
 
 <h1>Welcome to SvelteKit</h1>
@@ -8,12 +14,46 @@
   to read the documentation
 </p>
 
-<Button on:click={() => alert('It worked!')} variant="raised">Click Me!</Button>
-<Button color="secondary" on:click={() => alert('It worked!')} variant="raised">
-  Click Me!
-</Button>
+<div>
+  <Button on:click={() => alert('It worked!')} variant="raised">
+    Click Me!
+  </Button>
+  <Button
+    color="secondary"
+    on:click={() => alert('It worked!')}
+    variant="raised"
+  >
+    Click Me!
+  </Button>
+</div>
+
+<Autocomplete
+  combobox
+  label="Favorite Animal"
+  options={animals}
+  bind:value={selectedAnimal}
+/>
+
+<div>
+  <h2>Birthday (input type="date")</h2>
+  <input type="date" bind:value={selectedDate} />
+  <p>You selected {selectedDate}.</p>
+</div>
+
+<div>
+  <h2>Birthday (DatePicker)</h2>
+  <DatePicker bind:selectedDate />
+  <p>You selected {selectedDate}.</p>
+</div>
 
 <style>
+  input[type='date'] {
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
   p {
     color: red;
   }
