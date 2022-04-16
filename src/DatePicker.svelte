@@ -2,27 +2,28 @@
   import {DAYS, MONTH_NAMES} from './date-utils';
 
   export let selectedDate: Date;
-  export let maxYear = (selectedDate || new Date()).getUTCFullYear() + 10;
-  export let minYear = (selectedDate || new Date()).getUTCFullYear() - 10;
+  export let maxYear = (selectedDate || new Date()).getFullYear() + 10;
+  export let minYear = (selectedDate || new Date()).getFullYear() - 10;
   export let preventFuture = false;
   export let preventPast = false;
 
   const today = new Date();
-  let currentDay = today.getUTCDate();
-  let currentMonth = today.getUTCMonth();
-  let currentYear = today.getUTCFullYear();
+  let currentDay = today.getDate();
+  let currentMonth = today.getMonth();
+  let currentYear = today.getFullYear();
 
+  // Initial date whose month should be displayed.
   let date = new Date(selectedDate);
 
   let daySets: string[][] = [];
 
   let month: number;
-  $: month = date.getUTCMonth();
+  $: month = date.getMonth();
 
   let year: number;
-  $: year = date.getUTCFullYear();
+  $: year = date.getFullYear();
 
-  $: if (selectedDate) setDaySets(year, month);
+  $: setDaySets(date);
 
   let disablePrevious = false;
   $: disablePrevious =
@@ -36,19 +37,19 @@
 
   function changeMonth(event: Event) {
     const target = event.target as HTMLSelectElement;
-    date.setUTCMonth(Number(target.value));
+    date.setMonth(Number(target.value));
     date = date; // trigger reactivity
   }
 
   function changeYear(event: Event) {
     const target = event.target as HTMLSelectElement;
-    date.setUTCFullYear(Number(target.value));
+    date.setFullYear(Number(target.value));
     date = date; // trigger reactivity
   }
 
   function getDateSuffix(year: number, month: number, day: number): string {
-    const currentYear = date.getUTCFullYear();
-    const currentMonth = date.getUTCMonth();
+    const currentYear = date.getFullYear();
+    const currentMonth = date.getMonth();
 
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
       return 'b'; // for before
@@ -59,14 +60,14 @@
     }
 
     if (
-      year === today.getUTCFullYear() &&
-      month === today.getUTCMonth() &&
-      day === today.getUTCDate()
+      year === today.getFullYear() &&
+      month === today.getMonth() &&
+      day === today.getDate()
     ) {
       return 't'; // for today
     }
 
-    const currentDay = date.getUTCDate();
+    const currentDay = date.getDate();
     if (year === currentYear && month === currentMonth && day === currentDay) {
       return 's'; // for selected
     }
@@ -76,34 +77,34 @@
 
   function getLastDayInCurrentMonth(): number {
     const d = new Date(year, month + 1, 1); // 1st of next month
-    d.setUTCDate(d.getUTCDate() - 1);
-    return d.getUTCDate();
+    d.setDate(d.getDate() - 1);
+    return d.getDate();
   }
 
   function getLastDayInPreviousMonth(): number {
     const d = new Date(year, month, 1); // 1st of current month
-    d.setUTCDate(d.getUTCDate() - 1);
-    return d.getUTCDate();
+    d.setDate(d.getDate() - 1);
+    return d.getDate();
   }
 
   function isSelected(day: string): boolean {
     const selected =
       !day.endsWith('a') &&
       !day.endsWith('b') &&
-      parseInt(day) == selectedDate.getUTCDate() &&
-      date.getUTCMonth() === selectedDate.getUTCMonth() &&
-      date.getUTCFullYear() === selectedDate.getUTCFullYear();
+      parseInt(day) == selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear();
     return selected;
   }
 
   function nextMonth() {
-    date.setUTCMonth(date.getUTCMonth() + 1);
-    date = date; // trigger reactivity
+    date = new Date(date); // copy so selectedDate isn't modified
+    date.setMonth(date.getMonth() + 1);
   }
 
   function previousMonth() {
-    date.setUTCMonth(date.getUTCMonth() - 1);
-    date = date; // trigger reactivity
+    date = new Date(date); // copy so selectedDate isn't modified
+    date.setMonth(date.getMonth() - 1);
   }
 
   function selectDate(day: string) {
@@ -125,18 +126,20 @@
     const newDate = new Date(selectedYear, selectedMonth, parseInt(day));
     if (preventPast && newDate < today) return;
     if (preventFuture && newDate > today) return;
-    selectedDate = newDate;
+    date = selectedDate = newDate;
 
     // Prepare to reopen on the last selected month.
     year = selectedYear;
     month = selectedMonth;
   }
 
-  function setDaySets(y: number, m: number) {
+  function setDaySets(date: Date) {
+    let y = date.getFullYear();
+    let m = date.getMonth();
     daySets = [];
 
-    const isCurrentMonth =
-      y === today.getUTCFullYear() && m === today.getUTCMonth();
+    const isSelectedMonth =
+      y === selectedDate.getFullYear() && m === selectedDate.getMonth();
 
     const d = new Date(y, m, 1); // 1st of current month
     const dayOfWeekIndex = d.getDay();
@@ -153,7 +156,7 @@
 
     const remaining = 7 - dayOfWeekIndex;
     for (let day = 1; day <= remaining; day++) {
-      const suffix = isCurrentMonth && day === currentDay ? 't' : '';
+      const suffix = isSelectedMonth && day === currentDay ? 't' : '';
       if (preventPast && new Date(y, m, day) < today) continue;
       if (preventFuture && new Date(y, m, day) > today) continue;
       set.push(day + suffix);
@@ -182,6 +185,7 @@
       daySets.push(set);
     }
 
+    //console.log('DatePicker.svelte x: daySets =', daySets);
     daySets = daySets; // trigger reactivity
   }
 </script>
@@ -246,7 +250,7 @@
     </tbody>
   </table>
   <div class="buttons">
-    <button on:click={() => (date = new Date())}>Today</button>
+    <button on:click={() => (date = selectedDate = new Date())}>Today</button>
   </div>
 </div>
 
@@ -319,7 +323,7 @@
   }
 
   .month-select {
-    width: 7rem;
+    width: 7.5rem;
   }
 
   select {
