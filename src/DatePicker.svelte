@@ -8,6 +8,7 @@
   export let minYear = (date || new Date()).getFullYear() - 10;
   export let preventFuture = false;
   export let preventPast = false;
+  //TODO: Allow a date range to span months.
   export let range = false;
 
   const dispatch = createEventDispatcher();
@@ -56,17 +57,17 @@
 
   function getDateSuffix(year: number, month: number, day: number): string {
     const d = new Date(year, month, day);
-    const rangeSuffix = range && inRange(d) ? 'r' : '';
+    const rangeCode = getRangeCode(d);
 
     const currentYear = displayDate.getFullYear();
     const currentMonth = displayDate.getMonth();
 
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
-      return rangeSuffix + 'b'; // for before
+      return rangeCode + 'b'; // for before
     }
 
     if (year > currentYear || (year === currentYear && month > currentMonth)) {
-      return rangeSuffix + 'a'; // for after
+      return rangeCode + 'a'; // for after
     }
 
     if (
@@ -74,15 +75,15 @@
       month === today.getMonth() &&
       day === today.getDate()
     ) {
-      return rangeSuffix + 't'; // for today
+      return rangeCode + 't'; // for today
     }
 
     const currentDay = displayDate.getDate();
     if (year === currentYear && month === currentMonth && day === currentDay) {
-      return rangeSuffix + 's'; // for selected
+      return rangeCode + 's'; // for selected
     }
 
-    return rangeSuffix;
+    return rangeCode;
   }
 
   function getLastDayInCurrentMonth(): number {
@@ -97,13 +98,23 @@
     return d.getDate();
   }
 
-  function inRange(d: Date): boolean {
-    //console.log('DatePicker.svelte inRange: d =', d);
-    //console.log('DatePicker.svelte inRange: date =', date);
-    //console.log('DatePicker.svelte inRange: endDate =', endDate);
-    const included = date <= d && d <= endDate;
-    //console.log('DatePicker.svelte inRange: included =', included);
-    return included;
+  function getRangeCode(d: Date): string {
+    const time = d.getTime();
+    const startTime = date ? date.getTime() : 0;
+    const endTime = endDate ? endDate.getTime() : 0;
+    return !range
+      ? ''
+      : time === startTime
+      ? '<'
+      : time === endTime
+      ? '>'
+      : startTime < time && time < endTime
+      ? '-'
+      : '';
+  }
+
+  function isInRange(day: string): boolean {
+    return day.includes('<') || day.includes('-') || day.includes('>');
   }
 
   function isSelected(day: string): boolean {
@@ -111,7 +122,7 @@
     const selected =
       !day.endsWith('a') &&
       !day.endsWith('b') &&
-      parseInt(day) == date.getDate() &&
+      parseInt(day) === date.getDate() &&
       displayDate.getMonth() === date.getMonth() &&
       displayDate.getFullYear() === date.getFullYear();
     return selected;
@@ -198,9 +209,9 @@
       const end = getLastDayInPreviousMonth();
       const start = end - dayOfWeekIndex + 1;
       for (let day = start; day <= end; day++) {
-        const d = new Date(y, m, day);
+        const d = new Date(y, m - 1, day);
         if (preventPast && d < today) continue;
-        const code = range && inRange(d) ? 'rb' : 'b';
+        const code = range ? getRangeCode(d) + 'b' : 'b';
         set.push(day + code);
       }
     }
@@ -210,7 +221,7 @@
       const d = new Date(y, m, day);
       if (preventPast && d < today) continue;
       if (preventFuture && d > today) continue;
-      let code = range && inRange(d) ? 'r' : '';
+      let code = getRangeCode(d);
       if (isSelectedMonth && day === currentDay) code += 't';
       set.push(day + code);
     }
@@ -290,7 +301,9 @@
             <td
               class:after={day.endsWith('a')}
               class:before={day.endsWith('b')}
-              class:range={day.includes('r')}
+              class:range={isInRange(day)}
+              class:range-start={day.includes('<')}
+              class:range-end={day.includes('>')}
               class:selected={isSelected(day)}
               class:today={day.endsWith('t')}
               on:click={() => selectDate(day)}
@@ -417,6 +430,18 @@
 
   td.range {
     background-color: rgba(255, 165, 0, 0.3);
+  }
+
+  td.range-start {
+    background-color: rgba(255, 165, 0, 0.6);
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+  }
+
+  td.range-end {
+    background-color: rgba(255, 165, 0, 0.6);
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
   }
 
   th {
