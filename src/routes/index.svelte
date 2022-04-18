@@ -4,7 +4,7 @@
   import MultiSelect from 'svelte-multiselect';
 
   import DateInput from '../DateInput.svelte';
-  import {formatDateShort} from '../date-util';
+  import {formatDateShort} from '../date-utils';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
   let selectedAnimal = '';

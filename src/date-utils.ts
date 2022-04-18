@@ -66,6 +66,14 @@ export function formatDateLocalMedium(date: Date): string {
   return year + '-' + zeroPad(month) + '-' + zeroPad(day);
 }
 
+export function formatDateShort(date: Date): string {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Returns a string in the format yyyy-mm-dd hh:mm:ss.
 export function formatDateTimeMedium(date: Date, includeAmPm = false): string {
   const year = date.getFullYear();
@@ -104,14 +112,6 @@ export function formatDateTimeUTCMedium(
     `${year}-${zeroPad(month)}-${zeroPad(day)} ` +
     `${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`;
   return includeAmPm ? text + ' ' + amPm : text;
-}
-
-// Returns a string in the format mm/dd/yy (in English).
-export function formatDateShort(locale: string, date: Date): string {
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
-  return `${zeroPad(month)}/${zeroPad(day)}/${year % 100}`;
 }
 
 // Returns a date that is one second before midnight today.

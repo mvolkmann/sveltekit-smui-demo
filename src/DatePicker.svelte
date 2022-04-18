@@ -1,6 +1,6 @@
 <script lang="ts">
   import {createEventDispatcher} from 'svelte';
-  import {DAYS, MONTH_NAMES} from './date-utils';
+  import {clearTime, DAYS, MONTH_NAMES} from './date-utils';
 
   export let date: Date; // start date when range is true
   export let endDate: Date; // when range is true
@@ -13,6 +13,8 @@
   const dispatch = createEventDispatcher();
 
   const today = new Date();
+  clearTime(today);
+
   let currentDay = today.getDate();
   let currentMonth = today.getMonth();
   let currentYear = today.getFullYear();
@@ -96,7 +98,12 @@
   }
 
   function inRange(d: Date): boolean {
-    return date <= d && d <= endDate;
+    //console.log('DatePicker.svelte inRange: d =', d);
+    //console.log('DatePicker.svelte inRange: date =', date);
+    //console.log('DatePicker.svelte inRange: endDate =', endDate);
+    const included = date <= d && d <= endDate;
+    //console.log('DatePicker.svelte inRange: included =', included);
+    return included;
   }
 
   function isSelected(day: string): boolean {
@@ -123,8 +130,10 @@
   function selectDate(day: string) {
     const before = day.endsWith('b');
     const after = day.endsWith('a');
+
     let selectedYear = year;
     let selectedMonth = month;
+
     if (before && month === 0) {
       selectedYear--;
       selectedMonth = 11;
@@ -136,16 +145,20 @@
     } else if (after) {
       selectedMonth++;
     }
+
     const newDate = new Date(selectedYear, selectedMonth, parseInt(day));
     if (preventPast && newDate < today) return;
     if (preventFuture && newDate > today) return;
+
     displayDate = newDate;
 
     if (range) {
       if (date && !endDate) {
         endDate = displayDate;
+        console.log('DatePicker.svelte selectDate: endDate =', endDate);
       } else {
         date = displayDate;
+        console.log('DatePicker.svelte selectDate: date =', date);
         endDate = null;
       }
     } else {
@@ -160,14 +173,11 @@
   }
 
   function selectToday() {
-    displayDate = date = new Date();
+    date = new Date();
+    clearTime(date);
+    displayDate = date;
     if (range) {
-      if (date && !endDate) {
-        endDate = displayDate;
-      } else {
-        date = displayDate;
-        endDate = null;
-      }
+      endDate = null;
     } else {
       dispatch('select');
     }

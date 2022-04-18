@@ -3,7 +3,7 @@
   import DatePicker from './DatePicker.svelte';
   import Dialog, {Actions, Content, Title} from '@smui/dialog';
   import {Icon} from '@smui/button';
-  import {formatDateShort} from './date-util';
+  import {formatDateShort} from './date-utils';
 
   export let date: Date;
   export let endDate: Date = null;
