@@ -10,11 +10,7 @@
   import type {TopAppBarComponentDev} from '@smui/top-app-bar';
   import IconButton, {Icon} from '@smui/icon-button';
 
-  const notifications = [
-    {text: 'Walk the dog.'},
-    {text: 'Buy milk.'},
-    {text: 'Cut the grass.'}
-  ];
+  import {notifications} from '../stores';
 
   const pages = [
     {title: 'Inbox', icon: 'inbox'},
@@ -85,11 +81,11 @@
       </div>
     </Section>
     <Section align="end" toolbar>
-      {#if notifications.length > 0}
+      {#if $notifications.length > 0}
         <IconButton on:click={toggleNotifications}>
           <Icon class="material-icons">notifications</Icon>
           <Badge aria-label="unread content count" position="inset">
-            {notifications.length}
+            {$notifications.length}
           </Badge>
         </IconButton>
       {/if}
@@ -128,7 +124,7 @@
     <Title>Notifications</Title>
     <Content>
       <ul>
-        {#each notifications as notification}
+        {#each $notifications as notification}
           <li>{notification.text}</li>
         {/each}
       </ul>
