@@ -1,8 +1,7 @@
 <script lang="ts">
   import Autocomplete from '@smui-extra/autocomplete';
   import Button, {Label} from '@smui/button';
-  // Also see https://6edesign.github.io/svelte-calendar/.
-  import DatePicker from '../DatePicker.svelte';
+  import DateInput from '../DateInput.svelte';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
   let selectedAnimal = '';
@@ -43,7 +42,7 @@
 
 <div>
   <h2>Birthday (DatePicker)</h2>
-  <DatePicker bind:selectedDate />
+  <DateInput bind:date={selectedDate} />
   <p>You selected {selectedDate}.</p>
 </div>
 

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import Button, {Label} from '@smui/button';
+  import Button, {Icon, Label} from '@smui/button';
   import Dialog, {Actions, Content, Title} from '@smui/dialog';
-  import IconButton, {Icon} from '@smui/icon-button';
 
   import {notifications} from './stores';
 
