@@ -53,15 +53,18 @@
   }
 
   function getDateSuffix(year: number, month: number, day: number): string {
+    const d = new Date(year, month, day);
+    const rangeSuffix = range && inRange(d) ? 'r' : '';
+
     const currentYear = displayDate.getFullYear();
     const currentMonth = displayDate.getMonth();
 
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
-      return 'b'; // for before
+      return rangeSuffix + 'b'; // for before
     }
 
     if (year > currentYear || (year === currentYear && month > currentMonth)) {
-      return 'a'; // for after
+      return rangeSuffix + 'a'; // for after
     }
 
     if (
@@ -69,15 +72,15 @@
       month === today.getMonth() &&
       day === today.getDate()
     ) {
-      return 't'; // for today
+      return rangeSuffix + 't'; // for today
     }
 
     const currentDay = displayDate.getDate();
     if (year === currentYear && month === currentMonth && day === currentDay) {
-      return 's'; // for selected
+      return rangeSuffix + 's'; // for selected
     }
 
-    return '';
+    return rangeSuffix;
   }
 
   function getLastDayInCurrentMonth(): number {
@@ -90,6 +93,10 @@
     const d = new Date(year, month, 1); // 1st of current month
     d.setDate(d.getDate() - 1);
     return d.getDate();
+  }
+
+  function inRange(d: Date): boolean {
+    return date <= d && d <= endDate;
   }
 
   function isSelected(day: string): boolean {
@@ -132,13 +139,38 @@
     const newDate = new Date(selectedYear, selectedMonth, parseInt(day));
     if (preventPast && newDate < today) return;
     if (preventFuture && newDate > today) return;
-    displayDate = date = newDate;
+    displayDate = newDate;
+
+    if (range) {
+      if (date && !endDate) {
+        endDate = displayDate;
+      } else {
+        date = displayDate;
+        endDate = null;
+      }
+    } else {
+      date = displayDate;
+    }
 
     // Prepare to reopen on the last selected month.
     year = selectedYear;
     month = selectedMonth;
 
     dispatch('select');
+  }
+
+  function selectToday() {
+    displayDate = date = new Date();
+    if (range) {
+      if (date && !endDate) {
+        endDate = displayDate;
+      } else {
+        date = displayDate;
+        endDate = null;
+      }
+    } else {
+      dispatch('select');
+    }
   }
 
   function setDaySets(date: Date) {
@@ -156,17 +188,21 @@
       const end = getLastDayInPreviousMonth();
       const start = end - dayOfWeekIndex + 1;
       for (let day = start; day <= end; day++) {
-        if (preventPast && new Date(y, m, day) < today) continue;
-        set.push(day + 'b');
+        const d = new Date(y, m, day);
+        if (preventPast && d < today) continue;
+        const code = range && inRange(d) ? 'rb' : 'b';
+        set.push(day + code);
       }
     }
 
     const remaining = 7 - dayOfWeekIndex;
     for (let day = 1; day <= remaining; day++) {
-      const suffix = isSelectedMonth && day === currentDay ? 't' : '';
-      if (preventPast && new Date(y, m, day) < today) continue;
-      if (preventFuture && new Date(y, m, day) > today) continue;
-      set.push(day + suffix);
+      const d = new Date(y, m, day);
+      if (preventPast && d < today) continue;
+      if (preventFuture && d > today) continue;
+      let code = range && inRange(d) ? 'r' : '';
+      if (isSelectedMonth && day === currentDay) code += 't';
+      set.push(day + code);
     }
     daySets.push(set);
 
@@ -176,9 +212,8 @@
     while (!lastRow) {
       const set = [];
       for (let i = 0; i < 7; i++) {
-        const date = new Date(y, m, day);
-        const skip =
-          (preventPast && date < today) || (preventFuture && date > today);
+        const d = new Date(y, m, day);
+        const skip = (preventPast && d < today) || (preventFuture && d > today);
 
         if (!skip) set.push(day + getDateSuffix(y, m, day));
 
@@ -192,7 +227,7 @@
       daySets.push(set);
     }
 
-    //console.log('DatePicker.svelte x: daySets =', daySets);
+    console.log('DatePicker.svelte x: daySets =', daySets);
     daySets = daySets; // trigger reactivity
   }
 </script>
@@ -245,6 +280,7 @@
             <td
               class:after={day.endsWith('a')}
               class:before={day.endsWith('b')}
+              class:range={day.includes('r')}
               class:selected={isSelected(day)}
               class:today={day.endsWith('t')}
               on:click={() => selectDate(day)}
@@ -258,7 +294,7 @@
   </table>
   <div class="buttons">
     <button on:click={() => dispatch('close')}>Close</button>
-    <button on:click={() => (displayDate = date = new Date())}>Today</button>
+    <button on:click={selectToday}>Today</button>
   </div>
 </div>
 
@@ -306,6 +342,10 @@
 
   .date-picker :global(.before > .day) {
     color: purple;
+  }
+
+  .date-picker :global(.range > .day) {
+    color: green;
   }
 
   header {
@@ -356,12 +396,17 @@
   }
 
   td {
-    text-align: right;
-    vertical-align: top;
+    /*text-align: right;*/
+    text-align: center;
+    vertical-align: middle;
   }
 
   td:hover {
     font-weight: bold;
+  }
+
+  td.range {
+    background-color: rgba(255, 165, 0, 0.3);
   }
 
   th {
