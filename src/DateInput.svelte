@@ -6,9 +6,17 @@
   import {formatDateShort} from './date-util';
 
   export let date: Date;
+  export let endDate: Date = null;
+  export let range = false;
 
-  let value: string;
-  $: value = formatDateShort(date);
+  let startValue: string;
+  $: startValue = formatDateShort(date);
+
+  let endValue: string;
+  $: endValue = formatDateShort(endDate);
+
+  let dateRange: string;
+  $: dateRange = range ? startValue + ' to ' + endValue : '';
 
   let showDialog = false;
 
@@ -16,26 +24,41 @@
   const toggleDialog = () => (showDialog = !showDialog);
 </script>
 
-<div class="date-input">
-  <input type="date" bind:value />
+<div class="date-input" class:range>
+  {#if range}
+    <input type="text" value={dateRange} />
+  {:else}
+    <input type="date" bind:value={startValue} />
+  {/if}
   <Icon class="material-icons" on:click={toggleDialog}>event</Icon>
 </div>
 
 <Dialog bind:open={showDialog}>
   <DatePicker
     on:close={closeDialog}
-    on:select={closeDialog}
-    bind:selectedDate={date}
+    on:select={() => {
+      if (!range) closeDialog();
+    }}
+    {range}
+    bind:date
+    bind:endDate
   />
 </Dialog>
 
 <style>
   .date-input {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
     position: relative;
   }
 
-  .date-input :global(.material-icons) {
+  .date-input.range > input {
+    width: 12rem;
+  }
+
+  .date-input:not(.range) :global(.material-icons) {
     position: absolute;
     right: 8px;
     top: 7px;

@@ -11,6 +11,9 @@
   let selectedAnimals = [];
   let selectedDate = new Date();
 
+  let vacationStartDate: Date | null = null;
+  let vacationEndDate: Date | null = null;
+
   $: selectedDateValue = formatDateShort(selectedDate);
 </script>
 
@@ -53,6 +56,15 @@
 <div>
   <h2>Birthday (DatePicker)</h2>
   <DateInput bind:date={selectedDate} />
+</div>
+
+<div>
+  <h2>Vacation Date Range</h2>
+  <DateInput
+    range
+    bind:date={vacationStartDate}
+    bind:endDate={vacationEndDate}
+  />
 </div>
 
 <style>

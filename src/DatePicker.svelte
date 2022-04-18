@@ -2,11 +2,13 @@
   import {createEventDispatcher} from 'svelte';
   import {DAYS, MONTH_NAMES} from './date-utils';
 
-  export let selectedDate: Date;
-  export let maxYear = (selectedDate || new Date()).getFullYear() + 10;
-  export let minYear = (selectedDate || new Date()).getFullYear() - 10;
+  export let date: Date; // start date when range is true
+  export let endDate: Date; // when range is true
+  export let maxYear = (date || new Date()).getFullYear() + 10;
+  export let minYear = (date || new Date()).getFullYear() - 10;
   export let preventFuture = false;
   export let preventPast = false;
+  export let range = false;
 
   const dispatch = createEventDispatcher();
 
@@ -16,17 +18,17 @@
   let currentYear = today.getFullYear();
 
   // Initial date whose month should be displayed.
-  let date = new Date(selectedDate);
+  let displayDate = new Date(date || today);
 
   let daySets: string[][] = [];
 
   let month: number;
-  $: month = date.getMonth();
+  $: month = displayDate.getMonth();
 
   let year: number;
-  $: year = date.getFullYear();
+  $: year = displayDate.getFullYear();
 
-  $: setDaySets(date);
+  $: setDaySets(displayDate);
 
   let disablePrevious = false;
   $: disablePrevious =
@@ -40,19 +42,19 @@
 
   function changeMonth(event: Event) {
     const target = event.target as HTMLSelectElement;
-    date.setMonth(Number(target.value));
-    date = date; // trigger reactivity
+    displayDate.setMonth(Number(target.value));
+    displayDate = displayDate; // trigger reactivity
   }
 
   function changeYear(event: Event) {
     const target = event.target as HTMLSelectElement;
-    date.setFullYear(Number(target.value));
-    date = date; // trigger reactivity
+    displayDate.setFullYear(Number(target.value));
+    displayDate = displayDate; // trigger reactivity
   }
 
   function getDateSuffix(year: number, month: number, day: number): string {
-    const currentYear = date.getFullYear();
-    const currentMonth = date.getMonth();
+    const currentYear = displayDate.getFullYear();
+    const currentMonth = displayDate.getMonth();
 
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
       return 'b'; // for before
@@ -70,7 +72,7 @@
       return 't'; // for today
     }
 
-    const currentDay = date.getDate();
+    const currentDay = displayDate.getDate();
     if (year === currentYear && month === currentMonth && day === currentDay) {
       return 's'; // for selected
     }
@@ -91,23 +93,24 @@
   }
 
   function isSelected(day: string): boolean {
+    if (!date) return false;
     const selected =
       !day.endsWith('a') &&
       !day.endsWith('b') &&
-      parseInt(day) == selectedDate.getDate() &&
-      date.getMonth() === selectedDate.getMonth() &&
-      date.getFullYear() === selectedDate.getFullYear();
+      parseInt(day) == date.getDate() &&
+      displayDate.getMonth() === date.getMonth() &&
+      displayDate.getFullYear() === date.getFullYear();
     return selected;
   }
 
   function nextMonth() {
-    date = new Date(date); // copy so selectedDate isn't modified
-    date.setMonth(date.getMonth() + 1);
+    displayDate = new Date(displayDate); // copy so date isn't modified
+    displayDate.setMonth(displayDate.getMonth() + 1);
   }
 
   function previousMonth() {
-    date = new Date(date); // copy so selectedDate isn't modified
-    date.setMonth(date.getMonth() - 1);
+    displayDate = new Date(displayDate); // copy so date isn't modified
+    displayDate.setMonth(displayDate.getMonth() - 1);
   }
 
   function selectDate(day: string) {
@@ -129,7 +132,7 @@
     const newDate = new Date(selectedYear, selectedMonth, parseInt(day));
     if (preventPast && newDate < today) return;
     if (preventFuture && newDate > today) return;
-    date = selectedDate = newDate;
+    displayDate = date = newDate;
 
     // Prepare to reopen on the last selected month.
     year = selectedYear;
@@ -143,8 +146,7 @@
     let m = date.getMonth();
     daySets = [];
 
-    const isSelectedMonth =
-      y === selectedDate.getFullYear() && m === selectedDate.getMonth();
+    const isSelectedMonth = y === date.getFullYear() && m === date.getMonth();
 
     const d = new Date(y, m, 1); // 1st of current month
     const dayOfWeekIndex = d.getDay();
@@ -256,7 +258,7 @@
   </table>
   <div class="buttons">
     <button on:click={() => dispatch('close')}>Close</button>
-    <button on:click={() => (date = selectedDate = new Date())}>Today</button>
+    <button on:click={() => (displayDate = date = new Date())}>Today</button>
   </div>
 </div>
 
