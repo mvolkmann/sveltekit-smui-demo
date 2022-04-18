@@ -1,11 +1,15 @@
 <script lang="ts">
   import Autocomplete from '@smui-extra/autocomplete';
   import Button, {Label} from '@smui/button';
+
   import DateInput from '../DateInput.svelte';
+  import {formatDateShort} from '../date-util';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
   let selectedAnimal = '';
   let selectedDate = new Date();
+
+  $: selectedDateValue = formatDateShort(selectedDate);
 </script>
 
 <h1>Welcome to SvelteKit</h1>
@@ -36,14 +40,12 @@
 
 <div>
   <h2>Birthday (input type="date")</h2>
-  <input type="date" bind:value={selectedDate} />
-  <p>You selected {selectedDate}.</p>
+  <input type="date" bind:value={selectedDateValue} />
 </div>
 
 <div>
   <h2>Birthday (DatePicker)</h2>
   <DateInput bind:date={selectedDate} />
-  <p>You selected {selectedDate}.</p>
 </div>
 
 <style>
@@ -52,9 +54,5 @@
     border-radius: 0.5rem;
     font-size: 1rem;
     padding: 0.5rem;
-  }
-
-  p {
-    color: red;
   }
 </style>
