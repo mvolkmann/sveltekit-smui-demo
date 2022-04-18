@@ -7,6 +7,7 @@
   import daygridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
   import timeGridPlugin from '@fullcalendar/timegrid';
+  import {notifications} from '../stores';
 
   let calendarRef;
 
@@ -43,6 +44,19 @@
     weekends: true /* default is true */
   };
 
+  function addNotification() {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+    const timestamp = formatter.format(new Date());
+    const text = `This notification was created at ${timestamp}.`;
+    notifications.update(value => {
+      value.push({text});
+      return value;
+    });
+  }
+
   function goToPast() {
     let api = calendarRef.getAPI();
     api.gotoDate('1961-04-16');
@@ -56,6 +70,7 @@
 <h1>svelte-fullcalendar Demo</h1>
 
 <button on:click={goToPast}>Go to Past</button>
+<button on:click={addNotification}>Notify</button>
 
 <div class="calendar">
   <FullCalendar {options} bind:this={calendarRef} />

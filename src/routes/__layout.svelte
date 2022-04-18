@@ -1,15 +1,14 @@
 <script lang="ts">
   import {onMount} from 'svelte';
-  import Button, {Label} from '@smui/button';
   //import {H6} from '@smui/common/elements';
   import Badge from '@smui-extra/badge';
-  import Dialog, {Actions} from '@smui/dialog';
-  import Drawer, {AppContent, Content, Header, Subtitle} from '@smui/drawer';
-  import List, {Graphic, Item, Separator, Subheader, Text} from '@smui/list';
+  import Drawer, {Content} from '@smui/drawer';
+  import List, {Graphic, Item, Text} from '@smui/list';
   import TopAppBar, {AutoAdjust, Row, Section, Title} from '@smui/top-app-bar';
   import type {TopAppBarComponentDev} from '@smui/top-app-bar';
   import IconButton, {Icon} from '@smui/icon-button';
 
+  import NotifyDialog from '../NotifyDialog.svelte';
   import {notifications} from '../stores';
 
   const pages = [
@@ -120,23 +119,7 @@
     </Content>
   </Drawer>
 
-  <div class="notifications-dialog">
-    <Dialog bind:open={showNotifications}>
-      <Title>Notifications</Title>
-      <Content>
-        <ul>
-          {#each $notifications as notification}
-            <li>{notification.text}</li>
-          {/each}
-        </ul>
-      </Content>
-      <Actions>
-        <Button on:click={() => (showNotifications = false)}>
-          <Label>Close</Label>
-        </Button>
-      </Actions>
-    </Dialog>
-  </div>
+  <NotifyDialog bind:show={showNotifications} />
 
   <slot />
 </AutoAdjust>
@@ -161,13 +144,5 @@
   /* TODO: Can this be set in the SMUI theme files instead? */
   :global(.smui-badge) {
     --mdc-theme-primary: red;
-  }
-
-  .notifications-dialog :global(.mdc-dialog__container) {
-    display: inline-block;
-
-    position: absolute;
-    right: 0;
-    top: 64px;
   }
 </style>
