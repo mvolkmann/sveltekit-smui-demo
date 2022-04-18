@@ -16,7 +16,11 @@
   $: endValue = formatDateShort(endDate);
 
   let dateRange: string;
-  $: dateRange = range ? startValue + ' to ' + endValue : '';
+  $: dateRange = !range
+    ? ''
+    : !startValue || !endValue
+    ? 'unspecified'
+    : startValue + ' to ' + endValue;
 
   let showDialog = false;
 
@@ -26,7 +30,7 @@
 
 <div class="date-input" class:range>
   {#if range}
-    <input type="text" value={dateRange} />
+    <input type="text" readonly value={dateRange} />
   {:else}
     <input type="date" bind:value={startValue} />
   {/if}

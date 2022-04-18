@@ -8,7 +8,6 @@
   export let minYear = (date || new Date()).getFullYear() - 10;
   export let preventFuture = false;
   export let preventPast = false;
-  //TODO: Allow a date range to span months.
   export let range = false;
 
   const dispatch = createEventDispatcher();
@@ -104,6 +103,8 @@
     const endTime = endDate ? endDate.getTime() : 0;
     return !range
       ? ''
+      : time === startTime && startTime === endTime
+      ? '='
       : time === startTime
       ? '<'
       : time === endTime
@@ -166,10 +167,8 @@
     if (range) {
       if (date && !endDate) {
         endDate = displayDate;
-        console.log('DatePicker.svelte selectDate: endDate =', endDate);
       } else {
         date = displayDate;
-        console.log('DatePicker.svelte selectDate: date =', date);
         endDate = null;
       }
     } else {
@@ -248,7 +247,7 @@
       daySets.push(set);
     }
 
-    console.log('DatePicker.svelte x: daySets =', daySets);
+    //console.log('DatePicker.svelte x: daySets =', daySets);
     daySets = daySets; // trigger reactivity
   }
 </script>
@@ -302,6 +301,7 @@
               class:after={day.endsWith('a')}
               class:before={day.endsWith('b')}
               class:range={isInRange(day)}
+              class:range-single={day.includes('=')}
               class:range-start={day.includes('<')}
               class:range-end={day.includes('>')}
               class:selected={isSelected(day)}
@@ -331,6 +331,9 @@
   }
 
   .date-picker {
+    --range-end-color: rgba(255, 165, 0, 0.6);
+    --range-middle-color: rgba(255, 165, 0, 0.3);
+
     display: inline-flex;
     flex-direction: column;
     align-items: center;
@@ -429,17 +432,22 @@
   }
 
   td.range {
-    background-color: rgba(255, 165, 0, 0.3);
+    background-color: var(--range-middle-color);
+  }
+
+  td.range-single {
+    background-color: var(--range-end-color);
+    border-radius: 50%;
   }
 
   td.range-start {
-    background-color: rgba(255, 165, 0, 0.6);
+    background-color: var(--range-end-color);
     border-top-left-radius: 50%;
     border-bottom-left-radius: 50%;
   }
 
   td.range-end {
-    background-color: rgba(255, 165, 0, 0.6);
+    background-color: var(--range-end-color);
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
   }
