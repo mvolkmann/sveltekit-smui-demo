@@ -3,27 +3,30 @@
   import DatePicker from './DatePicker.svelte';
   import Dialog, {Actions, Content, Title} from '@smui/dialog';
   import {Icon} from '@smui/button';
+  import {formatDateShort} from './date-util';
 
   export let date: Date;
 
-  $: console.log('DateInput.svelte x: date =', date);
-  $: console.log(
-    'DateInput.svelte x: date instanceof Date =',
-    date instanceof Date
-  );
+  let value: string;
+  $: value = formatDateShort(date);
 
   let showDialog = false;
 
+  const closeDialog = () => (showDialog = false);
   const toggleDialog = () => (showDialog = !showDialog);
 </script>
 
 <div class="date-input">
-  <input type="date" bind:value={date} />
+  <input type="date" bind:value />
   <Icon class="material-icons" on:click={toggleDialog}>event</Icon>
 </div>
 
 <Dialog bind:open={showDialog}>
-  <DatePicker on:close={() => (showDialog = false)} bind:selectedDate={date} />
+  <DatePicker
+    on:close={closeDialog}
+    on:select={closeDialog}
+    bind:selectedDate={date}
+  />
 </Dialog>
 
 <style>

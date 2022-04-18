@@ -134,6 +134,8 @@
     // Prepare to reopen on the last selected month.
     year = selectedYear;
     month = selectedMonth;
+
+    dispatch('select');
   }
 
   function setDaySets(date: Date) {
