@@ -68,6 +68,12 @@
       </IconButton>
       <Title>{activePage}</Title>
     </Section>
+    <Section class="links">
+      <div class="links">
+        <a href="/">Home</a>
+        <a href="/calendar">Calendar</a>
+      </div>
+    </Section>
     <Section align="end" toolbar>
       <IconButton
         aria-label={modeLabel}
@@ -102,3 +108,21 @@
 
   <slot />
 </AutoAdjust>
+
+<style>
+  a {
+    color: white;
+    font-family: sans-serif;
+    font-size: 1.2rem;
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: white;
+  }
+
+  .links {
+    display: flex;
+    gap: 1rem;
+  }
+</style>

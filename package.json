@@ -11,12 +11,17 @@
     "package": "svelte-kit package",
     "prepare": "svelte-kit sync",
     "preview": "svelte-kit preview",
+    "reinstall": "rm -rf node_modules package-lock.json && npm install",
     "smui-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark",
     "smui-light": "smui-theme compile static/smui-light.css -i src/theme",
     "test": "playwright test",
     "theme": "npm run smui-light && npm run smui-dark"
   },
   "devDependencies": {
+    "@fullcalendar/common": "^5.11.0",
+    "@fullcalendar/core": "^5.11.0",
+    "@fullcalendar/daygrid": "^5.11.0",
+    "@fullcalendar/interaction": "^5.11.0",
     "@playwright/test": "^1.21.0",
     "@smui-extra/autocomplete": "^6.0.0-beta.16",
     "@smui/button": "^6.0.0-beta.16",
@@ -37,6 +42,7 @@
     "smui-theme": "^6.0.0-beta.16",
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.6",
+    "svelte-fullcalendar": "^2.0.0-beta.0",
     "svelte-preprocess": "^4.10.1",
     "tslib": "^2.3.1",
     "typescript": "~4.6.2"

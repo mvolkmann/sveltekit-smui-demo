@@ -1,6 +1,7 @@
 <script lang="ts">
   import Autocomplete from '@smui-extra/autocomplete';
   import Button, {Label} from '@smui/button';
+  // Also see https://6edesign.github.io/svelte-calendar/.
   import DatePicker from '../DatePicker.svelte';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
