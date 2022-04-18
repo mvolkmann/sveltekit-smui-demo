@@ -1,12 +1,14 @@
 <script lang="ts">
   import Autocomplete from '@smui-extra/autocomplete';
-  import Button, {Label} from '@smui/button';
+  import Button from '@smui/button';
+  import MultiSelect from 'svelte-multiselect';
 
   import DateInput from '../DateInput.svelte';
   import {formatDateShort} from '../date-util';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
   let selectedAnimal = '';
+  let selectedAnimals = [];
   let selectedDate = new Date();
 
   $: selectedDateValue = formatDateShort(selectedDate);
@@ -38,6 +40,11 @@
   bind:value={selectedAnimal}
 />
 
+<div class="row">
+  <p>Favorite Animals</p>
+  <MultiSelect bind:selected={selectedAnimals} options={animals} />
+</div>
+
 <div>
   <h2>Birthday (input type="date")</h2>
   <input type="date" bind:value={selectedDateValue} />
@@ -54,5 +61,13 @@
     border-radius: 0.5rem;
     font-size: 1rem;
     padding: 0.5rem;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    font-family: sans-serif;
   }
 </style>

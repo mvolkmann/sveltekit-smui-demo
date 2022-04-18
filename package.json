@@ -46,6 +46,7 @@
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.6",
     "svelte-fullcalendar": "^2.0.0-beta.0",
+    "svelte-multiselect": "^4.0.6",
     "svelte-preprocess": "^4.10.1",
     "tslib": "^2.3.1",
     "typescript": "~4.6.2"
