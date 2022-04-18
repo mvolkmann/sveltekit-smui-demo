@@ -1,10 +1,20 @@
-<script>
+<script lang="ts">
   import Button, {Label} from '@smui/button';
   import Dialog, {Actions, Content, Title} from '@smui/dialog';
+  import IconButton, {Icon} from '@smui/icon-button';
 
   import {notifications} from './stores';
 
-  export let show;
+  export let show: boolean;
+
+  $: if ($notifications.length === 0) show = false;
+
+  function deleteNotification(index: number) {
+    notifications.update(value => {
+      value.splice(index, 1);
+      return value;
+    });
+  }
 </script>
 
 <div class="notifications-dialog">
@@ -12,8 +22,14 @@
     <Title>Notifications</Title>
     <Content>
       <ul>
-        {#each $notifications as notification}
-          <li>{notification.text}</li>
+        {#each $notifications as notification, index}
+          <li>
+            {notification.text}
+
+            <button on:click={() => deleteNotification(index)}>
+              <Icon class="material-icons">delete</Icon>
+            </button>
+          </li>
         {/each}
       </ul>
     </Content>
@@ -26,6 +42,18 @@
 </div>
 
 <style>
+  button {
+    background: transparent;
+    border: none;
+  }
+
+  li > button {
+    position: relative;
+    top: 0.5rem;
+
+    padding-left: 0;
+  }
+
   .notifications-dialog :global(.mdc-dialog__container) {
     display: inline-block;
 

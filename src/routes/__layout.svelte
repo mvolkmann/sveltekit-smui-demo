@@ -3,10 +3,10 @@
   //import {H6} from '@smui/common/elements';
   import Badge from '@smui-extra/badge';
   import Drawer, {Content} from '@smui/drawer';
+  import IconButton, {Icon} from '@smui/icon-button';
   import List, {Graphic, Item, Text} from '@smui/list';
   import TopAppBar, {AutoAdjust, Row, Section, Title} from '@smui/top-app-bar';
   import type {TopAppBarComponentDev} from '@smui/top-app-bar';
-  import IconButton, {Icon} from '@smui/icon-button';
 
   import NotifyDialog from '../NotifyDialog.svelte';
   import {notifications} from '../stores';
