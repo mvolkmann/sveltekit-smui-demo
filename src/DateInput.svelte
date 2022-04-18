@@ -6,6 +6,12 @@
 
   export let date: Date;
 
+  $: console.log('DateInput.svelte x: date =', date);
+  $: console.log(
+    'DateInput.svelte x: date instanceof Date =',
+    date instanceof Date
+  );
+
   let showDialog = false;
 
   const toggleDialog = () => (showDialog = !showDialog);
@@ -17,7 +23,7 @@
 </div>
 
 <Dialog bind:open={showDialog}>
-  <DatePicker bind:selectedDate={date} />
+  <DatePicker on:close={() => (showDialog = false)} bind:selectedDate={date} />
 </Dialog>
 
 <style>

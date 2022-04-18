@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {createEventDispatcher} from 'svelte';
   import {DAYS, MONTH_NAMES} from './date-utils';
 
   export let selectedDate: Date;
@@ -6,6 +7,8 @@
   export let minYear = (selectedDate || new Date()).getFullYear() - 10;
   export let preventFuture = false;
   export let preventPast = false;
+
+  const dispatch = createEventDispatcher();
 
   const today = new Date();
   let currentDay = today.getDate();
@@ -250,6 +253,7 @@
     </tbody>
   </table>
   <div class="buttons">
+    <button on:click={() => dispatch('close')}>Close</button>
     <button on:click={() => (date = selectedDate = new Date())}>Today</button>
   </div>
 </div>
