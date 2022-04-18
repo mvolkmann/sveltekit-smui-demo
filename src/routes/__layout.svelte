@@ -120,21 +120,23 @@
     </Content>
   </Drawer>
 
-  <Dialog bind:open={showNotifications}>
-    <Title>Notifications</Title>
-    <Content>
-      <ul>
-        {#each $notifications as notification}
-          <li>{notification.text}</li>
-        {/each}
-      </ul>
-    </Content>
-    <Actions>
-      <Button on:click={() => (showNotifications = false)}>
-        <Label>Close</Label>
-      </Button>
-    </Actions>
-  </Dialog>
+  <div class="notifications-dialog">
+    <Dialog bind:open={showNotifications}>
+      <Title>Notifications</Title>
+      <Content>
+        <ul>
+          {#each $notifications as notification}
+            <li>{notification.text}</li>
+          {/each}
+        </ul>
+      </Content>
+      <Actions>
+        <Button on:click={() => (showNotifications = false)}>
+          <Label>Close</Label>
+        </Button>
+      </Actions>
+    </Dialog>
+  </div>
 
   <slot />
 </AutoAdjust>
@@ -159,5 +161,13 @@
   /* TODO: Can this be set in the SMUI theme files instead? */
   :global(.smui-badge) {
     --mdc-theme-primary: red;
+  }
+
+  .notifications-dialog :global(.mdc-dialog__container) {
+    display: inline-block;
+
+    position: absolute;
+    right: 0;
+    top: 64px;
   }
 </style>
