@@ -1,13 +1,20 @@
 <script lang="ts">
   import {onMount} from 'svelte';
-  //import Button, {Label} from '@smui/button';
-  import {H6} from '@smui/common/elements';
+  import Button, {Label} from '@smui/button';
+  //import {H6} from '@smui/common/elements';
+  import Badge from '@smui-extra/badge';
+  import Dialog, {Actions} from '@smui/dialog';
   import Drawer, {AppContent, Content, Header, Subtitle} from '@smui/drawer';
   import List, {Graphic, Item, Separator, Subheader, Text} from '@smui/list';
   import TopAppBar, {AutoAdjust, Row, Section, Title} from '@smui/top-app-bar';
   import type {TopAppBarComponentDev} from '@smui/top-app-bar';
-  import IconButton from '@smui/icon-button';
-  import {page} from '$app/stores';
+  import IconButton, {Icon} from '@smui/icon-button';
+
+  const notifications = [
+    {text: 'Walk the dog.'},
+    {text: 'Buy milk.'},
+    {text: 'Cut the grass.'}
+  ];
 
   const pages = [
     {title: 'Inbox', icon: 'inbox'},
@@ -19,6 +26,7 @@
   let activePage = 'Inbox';
   let darkTheme: boolean;
   let drawerOpen = false;
+  let showNotifications = false;
   let topAppBar: TopAppBarComponentDev;
 
   $: modeLabel = `switch to ${darkTheme ? 'light' : 'dark'} mode`;
@@ -38,6 +46,8 @@
 
   const toggleDrawer = () => (drawerOpen = !drawerOpen);
   const toggleMode = () => (darkTheme = !darkTheme);
+
+  const toggleNotifications = () => (showNotifications = !showNotifications);
 </script>
 
 <svelte:head>
@@ -75,6 +85,14 @@
       </div>
     </Section>
     <Section align="end" toolbar>
+      {#if notifications.length > 0}
+        <IconButton on:click={toggleNotifications}>
+          <Icon class="material-icons">notifications</Icon>
+          <Badge aria-label="unread content count" position="inset">
+            {notifications.length}
+          </Badge>
+        </IconButton>
+      {/if}
       <IconButton
         aria-label={modeLabel}
         class="material-icons"
@@ -106,6 +124,22 @@
     </Content>
   </Drawer>
 
+  <Dialog bind:open={showNotifications}>
+    <Title>Notifications</Title>
+    <Content>
+      <ul>
+        {#each notifications as notification}
+          <li>{notification.text}</li>
+        {/each}
+      </ul>
+    </Content>
+    <Actions>
+      <Button on:click={() => (showNotifications = false)}>
+        <Label>Close</Label>
+      </Button>
+    </Actions>
+  </Dialog>
+
   <slot />
 </AutoAdjust>
 
@@ -124,5 +158,10 @@
   .links {
     display: flex;
     gap: 1rem;
+  }
+
+  /* TODO: Can this be set in the SMUI theme files instead? */
+  :global(.smui-badge) {
+    --mdc-theme-primary: red;
   }
 </style>
