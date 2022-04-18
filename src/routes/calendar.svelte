@@ -1,22 +1,37 @@
 <script lang="ts">
   import FullCalendar, {
     //Draggable,
-    type CalendarOptions
+    type CalendarOptions,
+    type EventDef
   } from 'svelte-fullcalendar';
   import daygridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
+  import timeGridPlugin from '@fullcalendar/timegrid';
 
   let calendarRef;
+
+  //let events: EventDef[] = [
+  let events = [
+    {title: 'Birthday', allDay: true, start: new Date(2022, 3, 16)},
+    {
+      title: 'fly to London',
+      start: new Date(2022, 3, 22, 6),
+      end: new Date(2022, 3, 22, 8)
+    }
+  ];
+
   let options: CalendarOptions = {
     dateClick: handleDateClick,
+    dragScroll: true,
     droppable: true,
     editable: true,
-    events: [
-      // initial event data
-      {title: 'Birthday', start: new Date(2022, 3, 16)}
-    ],
-    initialView: 'dayGridMonth',
-    plugins: [daygridPlugin, interactionPlugin],
+    eventDurationEditable: true,
+    eventResizableFromStart: true,
+    eventStartEditable: true,
+    events: events,
+    //initialView: 'dayGridMonth',
+    initialView: 'timeGridWeek',
+    plugins: [daygridPlugin, interactionPlugin, timeGridPlugin],
     /*
     headerToolbar: {
       left: 'prev,next today',
@@ -51,6 +66,7 @@
     --fc-border-color: red;
     --fc-button-bg-color: orange;
     --fc-button-border-color: transparent;
+    --fc-event-bg-color: purple;
     --fc-event-border-color: red; /* bullet before events */
     --fc-today-bg-color: rgba(0, 255, 0, 0.2); /* light green */
 
