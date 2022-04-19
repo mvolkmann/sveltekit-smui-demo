@@ -2,26 +2,31 @@
   import Autocomplete from '@smui-extra/autocomplete';
   import Button from '@smui/button';
   import MultiSelect from 'svelte-multiselect';
+  import {TimePicker} from 'svelte-time-picker';
 
   import DateInput from '../DateInput.svelte';
-  import {formatDateShort} from '../date-utils';
+  import {formatDateShort, timeFrom24Hour} from '../date-utils';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
+
+  let bedtime = '';
   let selectedAnimal = '';
   let selectedAnimals = [];
   let selectedDate = new Date();
-
-  let vacationStartDate: Date | null = null;
   let vacationEndDate: Date | null = null;
+  let vacationStartDate: Date | null = null;
 
   $: selectedDateValue = formatDateShort(selectedDate);
+
+  $: formattedBedtime = timeFrom24Hour('en-US', bedtime);
+
+  function onTimeChange(event) {
+    const time = event.detail; // a Date object
+    console.log('index.svelte onTimeChange: time =', time);
+  }
 </script>
 
 <h1>Welcome to SvelteKit</h1>
-<p>
-  Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a>
-  to read the documentation
-</p>
 
 <div>
   <Button on:click={() => alert('It worked!')} variant="raised">
@@ -67,8 +72,17 @@
   />
 </div>
 
+<div>
+  <h2>Bedtime</h2>
+  <input type="time" bind:value={bedtime} />
+  <p>Your bedtime is {formattedBedtime}.</p>
+</div>
+
+<TimePicker on:change={onTimeChange} />
+
 <style>
-  input[type='date'] {
+  input[type='date'],
+  input[type='time'] {
     border: 1px solid lightgray;
     border-radius: 0.5rem;
     font-size: 1rem;

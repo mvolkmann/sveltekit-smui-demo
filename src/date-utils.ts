@@ -37,8 +37,7 @@ export function dateToTime(locale: string, date: Date): string {
     .toLocaleTimeString(locale, {
       hour: 'numeric',
       minute: '2-digit'
-    })
-    .toLowerCase();
+    });
 }
 
 // Returns a string in the format m-name d, yyyy.
@@ -206,7 +205,7 @@ export function parseDate(text: string): Date {
 }
 
 // Creates a Date object from a time string
-// in the format "hh:mm am|pm".  For example, "7:12 am".
+// in the format "hh:mm AM|PM".  For example, "7:12 AM".
 export function timeToDate(time: string): Date {
   if (!time) time = '0:00';
   const [t, amPm] = time.split(' ');
@@ -214,7 +213,7 @@ export function timeToDate(time: string): Date {
 
   let h = Number(hours);
   const m = Number(minutes);
-  if (amPm === 'pm') h += 12;
+  if (amPm === 'PM') h += 12;
 
   const date = new Date();
   clearTime(date);
@@ -223,7 +222,7 @@ export function timeToDate(time: string): Date {
   return date;
 }
 
-export function timeFrom24HourTime(locale: string, time: string): string {
+export function timeFrom24Hour(locale: string, time: string): string {
   if (!time) return '';
   const [hours, minutes] = time.split(':');
   const date = new Date();
