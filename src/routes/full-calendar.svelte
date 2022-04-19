@@ -71,6 +71,8 @@
 
 <button on:click={goToPast}>Go to Past</button>
 <button on:click={addNotification}>Notify</button>
+<br />
+<br />
 
 <div class="calendar">
   <FullCalendar {options} bind:this={calendarRef} />

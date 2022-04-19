@@ -76,7 +76,8 @@
     <Section class="links">
       <div class="links">
         <a href="/">Home</a>
-        <a href="/calendar">Calendar</a>
+        <a href="/full-calendar">FullCalendar</a>
+        <a href="/tui-calendar">TUI Calendar</a>
       </div>
     </Section>
     <Section align="end" toolbar>

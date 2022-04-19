@@ -30,9 +30,10 @@ export function dateTo24HourTime(date: Date): string {
 }
 
 export function dateToTime(locale: string, date: Date): string {
-  const offset = date.getTimezoneOffset();
+  //const offset = date.getTimezoneOffset();
   const copy = new Date(date);
-  copy.setMinutes(copy.getMinutes() + offset);
+  //copy.setMinutes(copy.getMinutes() + offset);
+  copy.setMinutes(copy.getMinutes());
   return copy
     .toLocaleTimeString(locale, {
       hour: 'numeric',

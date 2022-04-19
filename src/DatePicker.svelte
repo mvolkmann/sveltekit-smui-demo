@@ -165,10 +165,13 @@
     displayDate = newDate;
 
     if (range) {
-      if (date && !endDate) {
-        endDate = displayDate;
+      if (newDate < date) {
+        date = newDate;
+        endDate = null;
+      } else if (date && !endDate) {
+        endDate = newDate;
       } else {
-        date = displayDate;
+        date = newDate;
         endDate = null;
       }
     } else {

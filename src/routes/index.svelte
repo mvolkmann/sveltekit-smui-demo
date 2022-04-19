@@ -5,14 +5,24 @@
   import {TimePicker} from 'svelte-time-picker';
 
   import DateInput from '../DateInput.svelte';
-  import {formatDateShort, timeFrom24Hour} from '../date-utils';
+  import TimePicker2 from '../TimePicker.svelte';
+  import TimeRange from '../TimeRange.svelte';
+  import {
+    dateTo24HourTime,
+    formatDateShort,
+    timeFrom24Hour
+  } from '../date-utils';
 
   const animals = ['Bird', 'Cat', 'Cow', 'Dog', 'Horse', 'Rabbit', 'Snake'];
+  const currentTime = dateTo24HourTime(new Date());
+  console.log('index.svelte x: currentTime =', currentTime);
 
   let bedtime = '';
   let selectedAnimal = '';
   let selectedAnimals = [];
   let selectedDate = new Date();
+  let startTime = currentTime;
+  let endTime = currentTime;
   let vacationEndDate: Date | null = null;
   let vacationStartDate: Date | null = null;
 
@@ -74,15 +84,18 @@
 
 <div>
   <h2>Bedtime</h2>
-  <input type="time" bind:value={bedtime} />
+  <TimePicker2 bind:time={bedtime} />
   <p>Your bedtime is {formattedBedtime}.</p>
 </div>
+
+<TimeRange {startTime} {endTime} />
+
+<br />
 
 <TimePicker on:change={onTimeChange} />
 
 <style>
-  input[type='date'],
-  input[type='time'] {
+  input[type='date'] {
     border: 1px solid lightgray;
     border-radius: 0.5rem;
     font-size: 1rem;
